@@ -1,3 +1,3 @@
-module Bitmask
+class Bitmask
   VERSION = "0.0.1"
 end
