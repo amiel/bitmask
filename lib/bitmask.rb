@@ -58,11 +58,11 @@ class Bitmask
   end
 
   def to_a
-    @masks.keys.sort { |a,b| @masks[a] <=> @masks[b] }.collect { |k| [k, get(k)] }
+    @masks.keys.select { |k| get k }
   end
 
   def each(&blk)
-    to_a.each(&blk)
+    to_h.each(&blk)
   end
 
   def to_h

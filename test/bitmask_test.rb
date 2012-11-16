@@ -37,14 +37,17 @@ class BitmaskTest < Test::Unit::TestCase
 
   def test_to_a
     bitmask = Bitmask.new TEST_MASKS, :phone => true, :name => true, :email => true
-    assert_equal([
-      [:phone,     true ],
-      [:name,      true ],
-      [:gender,    false],
-      [:email,     true ],
-      [:birthday,  false],
-      [:location,  false]
-    ], bitmask.to_a)
+    assert_equal([:phone, :name, :email], bitmask.to_a)
+  end
+
+  def test_each
+    bitmask = Bitmask.new TEST_MASKS, :phone => true, :name => true, :email => true
+    results = {}
+    bitmask.each do |k, v|
+      results[k] = v
+    end
+
+    assert_equal({:phone => true, :name => true, :email => true, :gender => false, :birthday => false, :location => false}, results)
   end
 
   def test_defaults
