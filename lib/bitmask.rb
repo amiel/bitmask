@@ -37,17 +37,17 @@ class Bitmask
   # arguments
   # masks::  a Hash where the key is the boolean attribute and the value is the bitmask.
   #             { :some_attribute => 0b0001, :another_attribute => 0b0010 }
-  # arg::    can be a Hash or Integer
-  def initialize(masks, arg)
+  # value::  can be a Hash or Integer
+  def initialize(masks, value)
     @masks = masks
-    case arg
+    case value
     when Hash
-      @data = 0
-      arg.each do |attr, value|
-        set attr, value
-      end
+      init_from_hash(value)
+    when Array
+      hash = Hash[value.zip(Array.new(value.size, true))]
+      init_from_hash(hash)
     else
-      @data = arg.to_i
+      @data = value.to_i
     end
   end
 
@@ -79,15 +79,21 @@ class Bitmask
     raise ArgumentError, "unknown attribute: #{attr}" unless @masks[attr]
     case value
     when true
-      @data |=  @masks[attr]
+      Bitmask.new(@masks, @data | @masks[attr])
     when false
-      @data &= ~@masks[attr]
+      Bitmask.new(@masks, @data & ~@masks[attr])
     end
   end
 
   def set_array(array)
-    @masks.each do |attr, value|
-      set attr, array.include?(attr)
-    end
+    self.class.new(@masks, array & @masks.keys)
+  end
+
+  private
+
+  def init_from_hash(h)
+    b = Bitmask.new(@masks, 0)
+    @data = h.inject(b) { |a, (attr, value)| a.set attr, value }.to_i
   end
 end
+
