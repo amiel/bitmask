@@ -20,10 +20,6 @@ class BitmaskTest < Test::Unit::TestCase
     assert !bitmask.get(:location)
   end
 
-  def test_fail
-    assert !"Force CI to fail"
-  end
-
   def test_set
     bitmask = Bitmask.new TEST_MASKS, 0
     assert !bitmask.get(:phone)
