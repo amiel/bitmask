@@ -23,7 +23,8 @@ class BitmaskTest < Test::Unit::TestCase
   def test_set
     bitmask = Bitmask.new TEST_MASKS, 0
     assert !bitmask.get(:phone)
-    bitmask.set(:phone, true)
+    res = bitmask.set(:phone, true)
+    assert res.is_a?(Bitmask)
     assert bitmask.get(:phone)
     assert !bitmask.get(:email)
     bitmask.set(:email, true)
@@ -76,7 +77,8 @@ class BitmaskTest < Test::Unit::TestCase
 
   def test_set_array
     bitmask = Bitmask.new TEST_MASKS, :phone => true, :name => true
-    bitmask.set_array [:phone, :email]
+    res = bitmask.set_array [:phone, :email]
+    assert res.is_a?(Bitmask)
     assert_equal(bitmask.to_h, {:phone => true, :name => false, :email => true, :gender => false, :birthday => false, :location => false})
   end
 
@@ -93,5 +95,17 @@ class BitmaskTest < Test::Unit::TestCase
       bitmask.set_array [:phone, :email, :foodebar]
     end
     assert_equal(bitmask.to_h, {:phone => true, :name => false, :email => true, :gender => false, :birthday => false, :location => false})
+  end
+
+  def test_chaining
+    masks = {
+      :cat  => 0b0001,
+      :dog  => 0b0010,
+      :fish => 0b0100,
+    }
+    bitmask = Bitmask.new(masks, {:cat => true})
+    assert_equal "1", bitmask.to_i.to_s(2)    # => "1"
+    bitmask.set(:dog, true).set(:cat, false).set(:fish, true)
+    assert_equal "110", bitmask.to_i.to_s(2)    # => "110"
   end
 end

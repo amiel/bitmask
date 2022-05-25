@@ -18,4 +18,6 @@ Gem::Specification.new do |gem|
   gem.name          = "bitmask"
   gem.require_paths = ["lib"]
   gem.version       = Bitmask::VERSION
+
+  gem.add_development_dependency "test-unit", "~> 3.5.3"
 end
