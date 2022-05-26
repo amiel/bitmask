@@ -45,6 +45,18 @@ Examples:
   bitmask.to_i.to_s(2)    # => "101"
 
   Bitmask.new(masks, 5) == Bitmask.new(masks, { :cat => true, :dog => false, :fish => true }) # => true
+
+  # Least Significant Bit - LSB
+  bitmask = Bitmask.new(masks, {:cat => true, :fish => true})
+  bitmask.lsb # => 1
+  bitmask.lsb.to_s(2) # => "1"
+  Bitmask.new(masks, bitmask.lsb).to_a # => [:cat]
+
+  # Most Significant Bit - MSB
+  bitmask = Bitmask.new(masks, 0b101)
+  bitmask.msb # => 4
+  bitmask.msb.to_s(2) # => "100"
+  Bitmask.new(masks, bitmask.msb).to_a # => [:fish]
 ```
 
 ## Contributing

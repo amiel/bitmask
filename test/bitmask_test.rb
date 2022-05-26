@@ -40,6 +40,28 @@ class BitmaskTest < Test::Unit::TestCase
     assert_equal([:phone, :name, :email], bitmask.to_a)
   end
 
+  def test_lsb
+    bitmask = Bitmask.new TEST_MASKS, :name => true, :email => true, :location => true
+    mask = Bitmask.new TEST_MASKS, :gender => true, :email => true, :birthday => true, :location => true
+    res = bitmask.to_i & mask.to_i
+    res_mask = Bitmask.new TEST_MASKS, res
+    assert_equal({:phone => false, :name => false, :gender => false, :email => true, :birthday => false, :location => true}, res_mask.to_h)
+    assert_equal(TEST_MASKS[:name], bitmask.lsb)
+    assert_equal(TEST_MASKS[:gender], mask.lsb)
+    assert_equal(TEST_MASKS[:email], res_mask.lsb)
+  end
+
+  def test_msb
+    bitmask = Bitmask.new TEST_MASKS, :name => true, :gender => true, :email => true, :location => true
+    mask = Bitmask.new TEST_MASKS, :gender => true, :email => true, :birthday => true
+    res = bitmask.to_i & mask.to_i
+    res_mask = Bitmask.new TEST_MASKS, res
+    assert_equal({:phone => false, :name => false, :gender => true, :email => true, :birthday => false, :location => false}, res_mask.to_h)
+    assert_equal(TEST_MASKS[:location], bitmask.msb)
+    assert_equal(TEST_MASKS[:birthday], mask.msb)
+    assert_equal(TEST_MASKS[:email], res_mask.msb)
+  end
+
   def test_each
     bitmask = Bitmask.new TEST_MASKS, :phone => true, :name => true, :email => true
     results = {}
@@ -51,7 +73,7 @@ class BitmaskTest < Test::Unit::TestCase
   end
 
   def test_defaults
-    bitmask = Bitmask.new(TEST_MASKS, nil || {:phone => true, :email => true})
+    bitmask = Bitmask.new(TEST_MASKS, {:phone => true, :email => true})
     assert  bitmask.get(:phone)
     assert !bitmask.get(:name)
     assert  bitmask.get(:email)
