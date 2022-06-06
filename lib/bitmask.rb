@@ -75,6 +75,7 @@ class Bitmask
   end
 
   # expects a boolean value
+  # @return self
   def set(attr, value)
     raise ArgumentError, "unknown attribute: #{attr}" unless @masks[attr]
     case value
@@ -83,11 +84,14 @@ class Bitmask
     when false
       @data &= ~@masks[attr]
     end
+    self
   end
 
+  # @return self
   def set_array(array)
     @masks.each do |attr, value|
       set attr, array.include?(attr)
     end
+    self
   end
 end
