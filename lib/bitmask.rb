@@ -94,4 +94,29 @@ class Bitmask
     end
     self
   end
+
+  # Most Significant Bit - MSB
+  def msb
+    # To find the position of
+    # the most significant
+    # set bit
+    k = Integer(Math.log(to_i, 2))
+
+    # To return the value
+    # of the number with set
+    # bit at k-th position
+    1 << k
+  end
+
+  # Least Significant Bit - LSB
+  # 00010100    &                (n = 20)
+  # 00010011                     (n-1 = 19)
+  # ~~~~~~~~
+  # 00010000    ^                (XOR result number with n)
+  # 00010100
+  # ~~~~~~~~
+  # 00000100  ——  LSB
+  def lsb
+    to_i & (to_i - 1) ^ to_i
+  end
 end
